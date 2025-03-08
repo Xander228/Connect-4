@@ -10,15 +10,17 @@ public class Piece extends JComponent {
     private Piece ghostPiece;
     private int boardX, boardY;
     private double pixelX, pixelY;
+    private double desiredX, desiredY;
     public double velocityX, velocityY;
+    public double maxVelocityX = 10000;
     private long lastDropTime;
+    private long lastUpdateTime;
 
     //type is a number 0 - 6 that refers to the type of tetromino
     public Piece(boolean isRed, int x, int y, boolean ghost) {
         this.isRed = isRed;
 
         this.ghost = ghost;
-
 
         setPixelCoords(x, y);
         setVisible(true);
@@ -51,12 +53,12 @@ public class Piece extends JComponent {
 
     public void resetClock() {
         lastDropTime = System.currentTimeMillis();
+        lastUpdateTime = System.currentTimeMillis();
     }
     public boolean drop(int cellsFilled) {
         double boundary = Constants.BOARD_HEIGHT - ((cellsFilled + 1) * Constants.PIECE_SIZE);
 
         if (pixelY == boundary && velocityY == 0) {
-            System.out.println("Piece is locked");
             setPixelCoords(pixelX, 0);
             return true;
         }
@@ -114,6 +116,21 @@ public class Piece extends JComponent {
 
     public boolean isRed() {
         return isRed;
+    }
+
+    public void moveTo(double x, double y) {
+        desiredX = x;
+        desiredY = y;
+    }
+
+    public void updatePosition() {
+        long time = System.currentTimeMillis();
+        double dt = (time - lastUpdateTime) / 1000.0;
+        velocityX = Math.clamp((desiredX > pixelX ? 1 : -1) * Math.pow(Math.abs(desiredX - pixelX), 1.2) * 5, -maxVelocityX, maxVelocityX);
+
+
+        setPixelCoords(pixelX + (velocityX * dt), pixelY);
+        lastUpdateTime = time;
     }
 
     public void setPixelCoords(double x, double y) {

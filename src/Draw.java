@@ -7,7 +7,7 @@ public class Draw {
         Color[] colors = new Color[tempColors.length];
         for (int i = 0; i < colors.length; i++) {
             colors[i] = ghost ?
-                    tempColors[i].darker().darker() :
+                    tempColors[i].darker() :
                     tempColors[i];
         }
 
@@ -139,8 +139,6 @@ public class Draw {
                 6,
                 Constants.EMPTY_EDGE_RADIUS,
                 Constants.EMPTY_EDGE_RADIUS);
-
-
 
     }
 

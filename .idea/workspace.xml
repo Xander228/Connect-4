@@ -5,22 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="710cc9a2-8638-4518-ad48-bd379ca353b9" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Connect 4.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/BoardCover.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/BoardPanel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Constants.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Draw.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/GameOver.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/GamePanel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/MainFrame.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Piece.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/ScorePanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BoardPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/BoardPanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Draw.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Draw.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/MainFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/MainFrame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Piece.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Piece.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,6 +26,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "Xander228"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/Xander228/Connect-4.git",
+    "accountId": "93125335-6aeb-42d5-aad3-6e1ea126ee30"
+  }
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 8
 }</component>
@@ -98,7 +99,7 @@
       <updated>1741046420247</updated>
       <workItem from="1741046421315" duration="588000" />
       <workItem from="1741196916603" duration="30460000" />
-      <workItem from="1741370165206" duration="6099000" />
+      <workItem from="1741370165206" duration="11842000" />
     </task>
     <servers />
   </component>

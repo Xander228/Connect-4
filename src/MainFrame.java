@@ -7,7 +7,7 @@ public class MainFrame extends JFrame {
     //TetrisFrame constructor
     public MainFrame() {
         //Set up the frame properties
-        setTitle("Block Blast"); //Title of the frame
+        setTitle("Connect 4"); //Title of the frame
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //Behavior on close, exits the program when the frame is closed
         setResizable(false); //sets the frame to a fixed size, not resizeable by a user
 

@@ -1,5 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 
 public class BoardPanel extends JPanel {
     //Game board array formatted in cols x rows (x,y)
@@ -17,6 +20,8 @@ public class BoardPanel extends JPanel {
         setBackground(Constants.ACCENT_COLOR);
         setPreferredSize( new Dimension(Constants.BOARD_WIDTH, 
                                         Constants.BOARD_HEIGHT));
+
+        setGhost(new Piece(Constants.RED_STARTS, 0, 0, true));
 
         Piece piece1 = new Piece(false, 0, 0, false);
         add(piece1);
@@ -37,7 +42,10 @@ public class BoardPanel extends JPanel {
         BoardCover boardCover = new BoardCover(Constants.BOARD_EDGE_WIDTH, Constants.DROP_ZONE_HEIGHT);
         add(boardCover,0);
 
+        addListeners();
+
         EventQueue.invokeLater(() -> new Thread(() -> {
+            ghost.resetClock();
             piece1.resetClock();
             piece2.resetClock();
             piece3.resetClock();
@@ -52,6 +60,7 @@ public class BoardPanel extends JPanel {
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
+                ghost.updatePosition();
                 if(piece1.drop(i1)) i1++;
                 if(piece2.drop(i2)) i2++;
                 if(piece3.drop(i3)) i3++;
@@ -64,9 +73,27 @@ public class BoardPanel extends JPanel {
                 repaint();
             }
         }).start());
-
     }
 
+    public void addListeners() {
+        addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                if(ghost != null) {
+                    ghost.moveTo(Math.clamp(Math.round((double)e.getX() / Constants.PIECE_SIZE), 1, Constants.BOARD_COLS) * Constants.PIECE_SIZE - Constants.PIECE_SIZE / 2.0, 0);
+                    repaint();
+                }
+            }
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                if(ghost != null) {
+                    ghost.moveTo(Math.clamp(Math.round((double)e.getX() / Constants.PIECE_SIZE), 1, Constants.BOARD_COLS) * Constants.PIECE_SIZE - Constants.PIECE_SIZE / 2.0, 0);
+                    repaint();
+                }
+            }
+        });
+
+    }
 
     public void setGhost(Piece piece) {
         removeAll();
@@ -82,45 +109,6 @@ public class BoardPanel extends JPanel {
         ghost = null;
         return true;
 
-    }
-
-    public void  updateGhostCoords(int pixelX, int pixelY) {
-        if (ghost == null) return;
-
-        double boardPixelX = pixelX / (double)Constants.PIECE_SIZE;
-        double boardPixelY = pixelY / (double)Constants.PIECE_SIZE;
-
-        int boardX = (int)Math.round(boardPixelX);
-        int boardY = (int)Math.round(boardPixelY);
-        int nextClosestX = boardPixelX - boardX > 0 ? boardX + 1 : boardX - 1;
-        int nextClosestY = boardPixelY - boardY > 0 ? boardY + 1 : boardY - 1;
-        int otherClosestX = boardPixelX - boardX > 0 ? boardX - 1 : boardX + 1;
-        int otherClosestY = boardPixelY - boardY > 0 ? boardY - 1 : boardY + 1;
-
-
-        if (ghost.isValidPosition(boardX, boardY, board))
-            ghost.setBoardCoords(boardX, boardY);
-
-        else if (ghost.isValidPosition(boardX, nextClosestY, board))
-            ghost.setBoardCoords(boardX, nextClosestY);
-        else if (ghost.isValidPosition(nextClosestX, boardY, board))
-            ghost.setBoardCoords(nextClosestX, boardY);
-        else if (ghost.isValidPosition(otherClosestX, boardY, board))
-            ghost.setBoardCoords(otherClosestX, boardY);
-        else if (ghost.isValidPosition(boardX, otherClosestY, board))
-            ghost.setBoardCoords(boardX, otherClosestY);
-
-        else if (ghost.isValidPosition(nextClosestX, nextClosestY, board))
-            ghost.setBoardCoords(nextClosestX, nextClosestY);
-        else if (ghost.isValidPosition(otherClosestX, nextClosestY, board))
-            ghost.setBoardCoords(otherClosestX, nextClosestY);
-        else if (ghost.isValidPosition(nextClosestX, otherClosestY, board))
-            ghost.setBoardCoords(nextClosestX, otherClosestY);
-        else if (ghost.isValidPosition(otherClosestX, otherClosestY, board))
-            ghost.setBoardCoords(otherClosestX, otherClosestY);
-
-        else ghost.setBoardCoords(Constants.BOARD_COLS, Constants.BOARD_ROWS);
-        repaint();
     }
 
 
