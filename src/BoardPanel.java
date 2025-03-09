@@ -55,11 +55,6 @@ public class BoardPanel extends JPanel {
             int i3 = 0;
             int i4 = 0;
             while (true) {
-                try {
-                    Thread.sleep(1);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
                 ghost.updatePosition();
                 if(piece1.drop(i1)) i1++;
                 if(piece2.drop(i2)) i2++;
@@ -93,6 +88,14 @@ public class BoardPanel extends JPanel {
             }
         });
 
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                tryLock();
+                repaint();
+            }
+        });
+
     }
 
     public void setGhost(Piece piece) {
@@ -103,7 +106,6 @@ public class BoardPanel extends JPanel {
 
     public boolean tryLock() {
         if (ghost == null) return false;
-        if (!ghost.isValidPosition(board)) return false;
         ghost.lock(board);
         remove(ghost);
         ghost = null;

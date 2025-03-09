@@ -1,6 +1,11 @@
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public class Draw {
+    private static BufferedImage boardCoverImage;
+    private static BufferedImage boardBackImage;
+
+
     public static void piece(int x, int y, int color, boolean ghost, Graphics2D g) {
         if (color == 0) return;
         Color[] tempColors = color == 1 ? Constants.RED_COLORS : Constants.YELLOW_COLORS;
@@ -71,7 +76,30 @@ public class Draw {
                 diameter - 2 * inset);
     }
 
-    public static void boardBack(Graphics2D g) {
+    public static void boardBack(Graphics2D g2d) {
+        if (boardBackImage == null)
+            boardBackImage = getBoardBackImage();
+        g2d.drawImage(boardBackImage, 0, 0, null);
+    }
+
+    private static BufferedImage getBoardBackImage() {
+        BufferedImage boardBack = new BufferedImage(Constants.BOARD_WIDTH, Constants.BOARD_HEIGHT, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = boardBack.createGraphics();
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
+        g.setRenderingHint(RenderingHints.KEY_RENDERING,
+                RenderingHints.VALUE_RENDER_QUALITY);
+        g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,
+                RenderingHints.VALUE_STROKE_PURE);
+        g.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING,
+                RenderingHints.VALUE_COLOR_RENDER_QUALITY);
+        g.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION,
+                RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+        g.setRenderingHint(RenderingHints.KEY_DITHERING,
+                RenderingHints.VALUE_DITHER_ENABLE);
+        g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+
         int pieceSize = Constants.PIECE_SIZE;
         int strokeRadius = 4;
         int inset = -1;
@@ -139,12 +167,33 @@ public class Draw {
                 6,
                 Constants.EMPTY_EDGE_RADIUS,
                 Constants.EMPTY_EDGE_RADIUS);
-
+        return boardBack;
     }
 
 
+    public static void boardCover(Graphics2D g2d){
+        if (boardCoverImage == null)
+            boardCoverImage = getBoardCoverImage();
+        g2d.drawImage(boardCoverImage, 0, 0, null);
+    }
 
-    public static void boardCover(Graphics2D g){
+    private static BufferedImage getBoardCoverImage() {
+        BufferedImage boardCover = new BufferedImage(Constants.PIECE_SIZE * Constants.BOARD_COLS, Constants.PIECE_SIZE * Constants.BOARD_ROWS + Constants.SLOT_INSET, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = boardCover.createGraphics();
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
+        g.setRenderingHint(RenderingHints.KEY_RENDERING,
+                RenderingHints.VALUE_RENDER_QUALITY);
+        g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,
+                RenderingHints.VALUE_STROKE_PURE);
+        g.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING,
+                RenderingHints.VALUE_COLOR_RENDER_QUALITY);
+        g.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION,
+                RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+        g.setRenderingHint(RenderingHints.KEY_DITHERING,
+                RenderingHints.VALUE_DITHER_ENABLE);
+        g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         int pieceSize = Constants.PIECE_SIZE;
         int edgeWidth = 4;
         Color[] colors = Constants.COVER_COLORS;
@@ -194,8 +243,6 @@ public class Draw {
                 Constants.BOARD_ROWS * pieceSize - 2 * edgeWidth + Constants.SLOT_INSET / 2,
                 Constants.EMPTY_EDGE_RADIUS,
                 Constants.EMPTY_EDGE_RADIUS);
-
-
 
 
         for(int indexX = 0; indexX < Constants.BOARD_COLS; indexX++) {
@@ -279,12 +326,8 @@ public class Draw {
                 0,
                 Constants.BOARD_COLS * pieceSize,
                 0);
-
-
-
+        return boardCover;
     }
-
-
 
 
 }

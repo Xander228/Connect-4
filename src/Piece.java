@@ -137,8 +137,8 @@ public class Piece extends JComponent {
         this.pixelX = x;
         this.pixelY = y;
         setBounds(
-                (int)x,
-                (int)y,
+                (int) x,
+                (int) y,
                 Constants.PIECE_SIZE * 5,
                 Constants.PIECE_SIZE * 5);
     }
