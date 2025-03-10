@@ -72,7 +72,7 @@ public class Piece extends JComponent {
     }
 
     public boolean doDrop(){
-        if(droppingInBoard && (ghost || Math.abs(pixelX - desiredX) > Constants.PIECE_SIZE / 4.0)) return false;
+        if(droppingInBoard && (ghost || Math.abs(pixelX - desiredX) > Constants.PIECE_SIZE / 8.0)) return false;
         if (pixelY == desiredY && velocityY == 0) return droppingInBoard;
 
         double dt = (time - lastUpdateTime) / 1000.0;

@@ -53,7 +53,7 @@ public class GamePanel extends JLayeredPane {
         JPanel innerPanel = new JPanel();
         innerPanel.setLayout(new BorderLayout(10, 10));
         innerPanel.setBackground(Constants.BACKGROUND_COLOR);
-        innerPanel.setBorder(BorderFactory.createMatteBorder(10, 10, 10, 10, Constants.BACKGROUND_COLOR));
+        innerPanel.setBorder(BorderFactory.createMatteBorder(5, 10, 10, 10, Constants.BACKGROUND_COLOR));
         // Add the matrixPanel and piecePanel to the panel
         JPanel outerBoardPanel = new JPanel();
         outerBoardPanel.setBorder(

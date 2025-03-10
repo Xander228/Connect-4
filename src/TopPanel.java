@@ -1,5 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
+import java.io.InputStream;
+
 
 public class TopPanel extends JPanel {
 
@@ -8,18 +11,28 @@ public class TopPanel extends JPanel {
         setPreferredSize( new Dimension(Constants.BOARD_WIDTH,
                                         Constants.SCORE_PANEL_HEIGHT));
         setBackground(Constants.BACKGROUND_COLOR);
-        setBorder(BorderFactory.createMatteBorder(5, 5, 5, 5, Constants.BACKGROUND_COLOR));
-        setLayout(new BorderLayout(0, 0));
+        setLayout(new FlowLayout(FlowLayout.CENTER, 0, 5 -Constants.SCORE_PANEL_HEIGHT / 2));
 
+        InputStream stream = TopPanel.class.getResourceAsStream("texgyreadventor-bold.otf");
+        Font font = new Font("Arial", Font.BOLD, 36);
 
-        class ScoreLabel extends JLabel {
-            ScoreLabel(){
-                super("", JLabel.CENTER);
-                this.setFont(new Font("Arial", Font.BOLD, 16));
-                this.setForeground(Constants.PRIMARY_COLOR);
-                this.setBorder(BorderFactory.createMatteBorder(0, 15, 0, 15, Constants.BACKGROUND_COLOR));
-            }
+        try {
+            font = Font.createFont(Font.TRUETYPE_FONT, stream);
+        } catch (FontFormatException e) {
+            System.out.println("Font format exception");
+        } catch (IOException e) {
+            System.out.println("Load error");
         }
+
+        font = font.deriveFont(Font.BOLD, 40);
+
+        JLabel title = new JLabel("CONNECT 4", JLabel.CENTER);
+        title.setFont(font);
+        title.setForeground(Constants.PRIMARY_COLOR);
+        add(title, BorderLayout.CENTER);
+
+
+
 
     }
 
