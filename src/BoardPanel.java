@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.awt.image.BufferedImage;
 
 public class BoardPanel extends JPanel {
     //Game board array formatted in cols x rows (x,y)
@@ -10,6 +11,7 @@ public class BoardPanel extends JPanel {
     
     //Create object variable to hold the current piece in hand
     private Piece ghost;
+    int lastMouseX = 0;
 
     //Create a counter to count the number of gameLoops elapsed since the last drop
 
@@ -20,54 +22,42 @@ public class BoardPanel extends JPanel {
         setBackground(Constants.ACCENT_COLOR);
         setPreferredSize( new Dimension(Constants.BOARD_WIDTH, 
                                         Constants.BOARD_HEIGHT));
+        setGhost(new Piece(
+                Constants.RED_STARTS,
+                (Constants.BOARD_WIDTH - Constants.PIECE_SIZE) / 2,
+                -Constants.PIECE_SIZE,
+                true));
+        ghost.resetClock();
+        ghost.dropIn();
+        ghost.moveToCol(Math.clamp(Math.round((double) lastMouseX / Constants.PIECE_SIZE), 1, Constants.BOARD_COLS) * Constants.PIECE_SIZE - Constants.PIECE_SIZE / 2.0);
 
-        setGhost(new Piece(Constants.RED_STARTS, 0, 0, true));
-
-        Piece piece1 = new Piece(false, 0, 0, false);
-        add(piece1);
-        piece1.setBoardCoords(0,0);
-
-        Piece piece2 = new Piece(true, 0, 0, false);
-        add(piece2);
-        piece2.setPixelCoords(Constants.PIECE_SIZE * 3 / 2,Constants.PIECE_SIZE * 3 / 4);
-
-        Piece piece3 = new Piece(false, 0, 0, false);
-        add(piece3);
-        piece3.setPixelCoords(Constants.PIECE_SIZE * 5 / 2, Constants.PIECE_SIZE / 2);
-
-        Piece piece4 = new Piece(true, 0, 0, false);
-        add(piece4);
-        piece4.setPixelCoords(Constants.PIECE_SIZE * 7 / 2, Constants.PIECE_SIZE / 4);
 
         BoardCover boardCover = new BoardCover(Constants.BOARD_EDGE_WIDTH, Constants.DROP_ZONE_HEIGHT);
-        add(boardCover,0);
+        add(boardCover, 0);
 
         addListeners();
-
         EventQueue.invokeLater(() -> new Thread(() -> {
-            ghost.resetClock();
-            piece1.resetClock();
-            piece2.resetClock();
-            piece3.resetClock();
-            piece4.resetClock();
-            int i1 = 0;
-            int i2 = 0;
-            int i3 = 0;
-            int i4 = 0;
-            while (true) {
-                ghost.updatePosition();
-                if(piece1.drop(i1)) i1++;
-                if(piece2.drop(i2)) i2++;
-                if(piece3.drop(i3)) i3++;
-                if(piece4.drop(i4)) i4++;
-
-                if(i1 >= Constants.BOARD_ROWS) i1 = 0;
-                if(i2 >= Constants.BOARD_ROWS) i2 = 0;
-                if(i3 >= Constants.BOARD_ROWS) i3 = 0;
-                if(i4 >= Constants.BOARD_ROWS) i4 = 0;
-                repaint();
-            }
-        }).start());
+                ghost.resetClock();
+                while (true) {
+                    if (ghost.updatePosition()) {
+                        ghost.lock(board);
+                        remove(ghost);
+                        boolean winner = isWinner();
+                        boolean tie = isTie();
+                        if(winner || tie)
+                            new GameOver((MainFrame) this.getTopLevelAncestor(), tie, ghost.isRed());
+                        setGhost(new Piece(
+                                !ghost.isRed(),
+                                lastMouseX - Constants.PIECE_SIZE / 2,
+                                -Constants.PIECE_SIZE,
+                                true));
+                        ghost.resetClock();
+                        ghost.dropIn();
+                        ghost.moveToCol(Math.clamp(Math.round((double) lastMouseX / Constants.PIECE_SIZE), 1, Constants.BOARD_COLS) * Constants.PIECE_SIZE - Constants.PIECE_SIZE / 2.0);
+                    }
+                    repaint();
+                }
+            }).start());
     }
 
     public void addListeners() {
@@ -75,23 +65,26 @@ public class BoardPanel extends JPanel {
             @Override
             public void mouseMoved(MouseEvent e) {
                 if(ghost != null) {
-                    ghost.moveTo(Math.clamp(Math.round((double)e.getX() / Constants.PIECE_SIZE), 1, Constants.BOARD_COLS) * Constants.PIECE_SIZE - Constants.PIECE_SIZE / 2.0, 0);
+                    ghost.moveToCol(Math.clamp(Math.round((double)e.getX() / Constants.PIECE_SIZE), 1, Constants.BOARD_COLS) * Constants.PIECE_SIZE - Constants.PIECE_SIZE / 2.0);
+                    lastMouseX = e.getX();
                     repaint();
                 }
             }
             @Override
             public void mouseDragged(MouseEvent e) {
-                if(ghost != null) {
-                    ghost.moveTo(Math.clamp(Math.round((double)e.getX() / Constants.PIECE_SIZE), 1, Constants.BOARD_COLS) * Constants.PIECE_SIZE - Constants.PIECE_SIZE / 2.0, 0);
-                    repaint();
-                }
+                mouseMoved(e);
             }
         });
 
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                tryLock();
+                if (e.getButton() != MouseEvent.BUTTON1 || ghost == null) return;
+                if (ghost.isDropping()) return;
+                int col = Math.clamp(Math.round((double)e.getX() / Constants.PIECE_SIZE), 1, Constants.BOARD_COLS);
+                int cells = getCellsFilled(col - 1);
+                if(cells  >= Constants.BOARD_ROWS) return;
+                ghost.startDrop(cells);
                 repaint();
             }
         });
@@ -99,20 +92,84 @@ public class BoardPanel extends JPanel {
     }
 
     public void setGhost(Piece piece) {
-        removeAll();
         ghost = piece;
         add(ghost);
     }
 
-    public boolean tryLock() {
-        if (ghost == null) return false;
-        ghost.lock(board);
-        remove(ghost);
-        ghost = null;
-        return true;
-
+    public int getCellsFilled(int col) {
+        for(int indexY = 0; indexY < Constants.BOARD_ROWS; indexY++) {
+            if(board[col][indexY] != 0) {
+                return Constants.BOARD_ROWS - indexY;
+            }
+        }
+        return 0;
     }
 
+    public boolean isWinner() {
+        for (int col = 0; col < Constants.BOARD_COLS; col++){
+            for (int row = 0; row < Constants.BOARD_ROWS; row++){
+                if (checkVertical(row, col)) return true;
+                if (checkHorizontal(row, col)) return true;
+                if (checkDiagonalUp(row, col)) return true;
+                if (checkDiagonalDown(row, col)) return true;
+            }
+        }
+        return false;
+    }
+
+
+    public boolean isTie() {
+        for (int row = 0; row < Constants.BOARD_ROWS; row++) {
+            for (int col = 0; col < Constants.BOARD_COLS; col++) {
+                if (board[col][row] == 0) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean checkVertical(int row, int col) {
+        int total = 0;
+        if(row + Constants.WINNING_LENGTH - 1 >= Constants.BOARD_ROWS) return false;
+        for(int i = 0; i < Constants.WINNING_LENGTH; i++) {
+            total += board[col][row + i];
+        }
+        if (total == -Constants.WINNING_LENGTH || total == Constants.WINNING_LENGTH) return true;
+        return false;
+    }
+
+    private boolean checkHorizontal(int row, int col) {
+        int total = 0;
+        if(col + Constants.WINNING_LENGTH - 1 >= Constants.BOARD_COLS) return false;
+        for(int i = 0; i < Constants.WINNING_LENGTH; i++) {
+            total += board[col + i][row];
+        }
+        if (total == -Constants.WINNING_LENGTH || total == Constants.WINNING_LENGTH) return true;
+        return false;
+    }
+
+    private boolean checkDiagonalUp(int row, int col) {
+        int total = 0;
+        if(row + Constants.WINNING_LENGTH - 1 >= Constants.BOARD_ROWS ||
+                col + Constants.WINNING_LENGTH - 1 >= Constants.BOARD_COLS) return false;
+        for(int i = 0; i < Constants.WINNING_LENGTH; i++) {
+            total += board[col + i][row + i];
+        }
+        if (total == -Constants.WINNING_LENGTH || total == Constants.WINNING_LENGTH) return true;
+        return false;
+    }
+
+    private boolean checkDiagonalDown(int row, int col) {
+        int total = 0;
+        if(row + Constants.WINNING_LENGTH - 1 >= Constants.BOARD_ROWS ||
+                col + Constants.WINNING_LENGTH - 1 >= Constants.BOARD_COLS) return false;
+        for(int i = 0; i < Constants.WINNING_LENGTH; i++) {
+            total += board[col + i][row + ((Constants.WINNING_LENGTH - 1) - i)];
+        }
+        if (total == -Constants.WINNING_LENGTH || total == Constants.WINNING_LENGTH) return true;
+        return false;
+    }
 
     private void paintBoard(Graphics2D g2d) {
         for(int indexX = 0; indexX < Constants.BOARD_COLS; indexX++) {
@@ -125,7 +182,6 @@ public class BoardPanel extends JPanel {
             }
         }
     }
-
 
     @Override
     protected void paintComponent(Graphics g) {

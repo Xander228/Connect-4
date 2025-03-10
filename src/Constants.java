@@ -5,26 +5,31 @@ public class Constants
 
     public static final int BOARD_COLS = 7;
     public static final int BOARD_ROWS = 6;
+    public static final int WINNING_LENGTH = 4;
 
     public static final boolean RED_STARTS = true;
     
     public static final int PIECE_SIZE = 60;
     public static final int PIECE_EDGE_WIDTH = PIECE_SIZE / 7;
-    public static final int EMPTY_EDGE_WIDTH = PIECE_SIZE / 30;
     public static final int EMPTY_EDGE_RADIUS = PIECE_SIZE / 10;
+
     public static final int DROP_ZONE_HEIGHT = PIECE_SIZE;
     public static final int SLOT_INSET = 5;
     public static final int BOTTOM_GAP_HEIGHT = 2;
+
     public static final int BOARD_EDGE_WIDTH = PIECE_SIZE / 2;
+
     public static final int BOARD_WIDTH = BOARD_COLS * PIECE_SIZE + (2 * BOARD_EDGE_WIDTH);
     public static final int BOARD_HEIGHT = BOARD_ROWS * PIECE_SIZE + DROP_ZONE_HEIGHT + BOTTOM_GAP_HEIGHT;
 
-    public static final double QUEUE_SCALE = 0.5;
-
-    public static final int GAMEOVER_HEIGHT = 200;
+    public static final int GAMEOVER_HEIGHT = 100;
     public static final int GAMEOVER_WIDTH = 300;
 
     public static final double GRAVITY = 10000;
+    public static final double BOUNCE_MULTIPLIER = .5;
+    public static final int X_VEL_GAIN = 3;
+    public static double MAX_X_VELOCITY = 10000;
+
     public static final int SCORE_PANEL_HEIGHT = 40;
     
     public static final  Color BACKGROUND_COLOR = new Color((int)0x354c87);

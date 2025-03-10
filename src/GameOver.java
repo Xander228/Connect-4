@@ -5,39 +5,26 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 
 public class GameOver extends JDialog{
-    GameOver(MainFrame frame, int score, int lines, int level){
+    GameOver(MainFrame frame, boolean tie, boolean redWin){
         super(frame,"GameOver");
         this.setSize(Constants.GAMEOVER_WIDTH, Constants.GAMEOVER_HEIGHT);
         this.setLocationRelativeTo(frame);
         this.setUndecorated(true);
+        this.setModalityType(ModalityType.APPLICATION_MODAL);
+        this.setBackground(Constants.BACKGROUND_COLOR);
 
         JPanel dialogPanel = new JPanel();
-        dialogPanel.setBorder(BorderFactory.createMatteBorder(10, 10, 10, 10, Constants.ACCENT_COLOR));
+        dialogPanel.setBorder(BorderFactory.createEtchedBorder());
+        dialogPanel.setBackground(Constants.ACCENT_COLOR);
         dialogPanel.setLayout(new BorderLayout(0, 0));
 
         JPanel textPanel = new JPanel();
-        textPanel.setBackground(Constants.PRIMARY_COLOR);
-        JLabel text = new JLabel("GAME OVER", JLabel.CENTER);
+        textPanel.setBackground(Constants.BACKGROUND_COLOR);
+        String textString = tie ? "TIE GAME" : (redWin ? "RED WINS" : "YELLOW WINS");
+        JLabel text = new JLabel(textString, JLabel.CENTER);
         text.setFont(new Font("Arial", Font.BOLD, 26));
-        text.setForeground(Constants.BACKGROUND_COLOR);
+        text.setForeground(Constants.PRIMARY_COLOR);
         textPanel.add(text, BorderLayout.NORTH);
-
-        JPanel infoPanel = new JPanel();
-        infoPanel.setBorder(BorderFactory.createMatteBorder(5, 5, 5, 5, Constants.BACKGROUND_COLOR));
-        infoPanel.setLayout(new BorderLayout(0, 0));
-        infoPanel.setBackground(Constants.BACKGROUND_COLOR);
-
-        class ScoreLabel extends JLabel {
-            ScoreLabel(String text){
-                super(text, JLabel.CENTER);
-                this.setFont(new Font("Arial", Font.BOLD, 16));
-                this.setForeground(Constants.PRIMARY_COLOR);
-            }
-        }
-
-        infoPanel.add(new ScoreLabel("Score: " + score), BorderLayout.NORTH);
-        infoPanel.add(new ScoreLabel("Lines: " + lines), BorderLayout.CENTER);
-        infoPanel.add(new ScoreLabel("Level: " + level), BorderLayout.SOUTH);
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.setBorder(BorderFactory.createMatteBorder(5, 25, 5, 25, Constants.BACKGROUND_COLOR));
@@ -49,10 +36,10 @@ public class GameOver extends JDialog{
                 super(text);
                 this.setFocusable(false);
                 this.setPreferredSize(new Dimension(100, 30));
-                this.setBackground(Constants.PRIMARY_COLOR);
+                this.setBackground(Constants.ACCENT_COLOR_2);
                 this.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Constants.ACCENT_COLOR));
                 this.setFont(new Font("Arial", Font.BOLD, 16));
-                this.setForeground(Constants.BACKGROUND_COLOR);
+                this.setForeground(Constants.PRIMARY_COLOR);
             }
         }
 
@@ -76,8 +63,7 @@ public class GameOver extends JDialog{
         buttonPanel.add(restart, BorderLayout.WEST);
         buttonPanel.add(end, BorderLayout.EAST);
 
-        dialogPanel.add(textPanel, BorderLayout.NORTH);
-        dialogPanel.add(infoPanel, BorderLayout.CENTER);
+        dialogPanel.add(textPanel);
         dialogPanel.add(buttonPanel, BorderLayout.SOUTH);
         this.add(dialogPanel);
         this.setVisible(true);

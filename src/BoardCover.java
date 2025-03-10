@@ -7,11 +7,9 @@ public class BoardCover extends JComponent {
     private int pixelX, pixelY;
 
     BoardCover(int pixelX, int pixelY) {
-        setOpaque(false);
         this.pixelX = pixelX;
         this.pixelY = pixelY;
-
-        EventQueue.invokeLater(this::addListeners);
+        addListeners();
     }
 
     private void addListeners() {

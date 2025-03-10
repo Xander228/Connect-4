@@ -6,7 +6,7 @@ public class GamePanel extends JLayeredPane {
 
 
     final private BoardPanel boardPanel; //Declare the matrixPanel
-    final private ScorePanel scorePanel;
+    final private TopPanel topPanel;
 
     private class RoundedBorder extends AbstractBorder {
         private final Color color;
@@ -44,7 +44,7 @@ public class GamePanel extends JLayeredPane {
     public GamePanel() {
 
         boardPanel = new BoardPanel(); //Create the MatrixPanel object
-        scorePanel = new ScorePanel();
+        topPanel = new TopPanel();
 
         //Set up the panel properties
 
@@ -61,7 +61,7 @@ public class GamePanel extends JLayeredPane {
         outerBoardPanel.setBackground(Constants.BACKGROUND_COLOR);
         outerBoardPanel.add(boardPanel, BorderLayout.CENTER);
         innerPanel.add(outerBoardPanel); //Adds the matrixPanel object to the center of the parent panel
-        innerPanel.add(scorePanel, BorderLayout.NORTH);
+        innerPanel.add(topPanel, BorderLayout.NORTH);
         add(innerPanel, 0); //Adds the piecePanel object to the bottom of the parent panel
 
     }
@@ -70,8 +70,8 @@ public class GamePanel extends JLayeredPane {
         return boardPanel;
     }
 
-    ScorePanel getScorePanel(){
-        return scorePanel;
+    TopPanel getScorePanel(){
+        return topPanel;
     }
 
 }
