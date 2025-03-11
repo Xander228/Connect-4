@@ -73,12 +73,4 @@ public class GamePanel extends JLayeredPane {
 
     }
 
-    BoardPanel getBoardPanel(){
-        return boardPanel;
-    }
-
-    TopPanel getScorePanel(){
-        return topPanel;
-    }
-
 }

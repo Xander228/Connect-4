@@ -8,7 +8,7 @@ public class Draw {
 
     public static void piece(int x, int y, int color, boolean ghost, Graphics2D g) {
         if (color == 0) return;
-        Color[] tempColors = color == 1 ? Constants.RED_COLORS : Constants.YELLOW_COLORS;
+        Color[] tempColors = color > 0 ? Constants.RED_COLORS : Constants.YELLOW_COLORS;
         Color[] colors = new Color[tempColors.length];
         for (int i = 0; i < colors.length; i++) {
             colors[i] = ghost ?

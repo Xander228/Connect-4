@@ -57,11 +57,16 @@ public class Piece extends JComponent {
 
 
     public void resetClock() {
-        lastUpdateTime = System.currentTimeMillis();
+        lastUpdateTime = System.nanoTime() / 1000000;
     }
 
     public void dropIn() {
         desiredY = 0;
+    }
+
+    public void dropOut() {
+        desiredY = Constants.BOARD_HEIGHT + 2 * Constants.PIECE_SIZE;
+        System.out.println("Dropping out");
     }
 
     public void startDrop(int cellsFilled) {
@@ -75,6 +80,7 @@ public class Piece extends JComponent {
         if(droppingInBoard && (ghost || Math.abs(pixelX - desiredX) > Constants.PIECE_SIZE / 8.0)) return false;
         if (pixelY == desiredY && velocityY == 0) return droppingInBoard;
 
+        System.out.println("Dropping into board:" + droppingInBoard);
         double dt = (time - lastUpdateTime) / 1000.0;
         double newY = pixelY + (velocityY * dt) + (0.5 * Constants.GRAVITY * dt * dt);
 
@@ -131,7 +137,7 @@ public class Piece extends JComponent {
     }
 
     public boolean updatePosition() {
-        time = System.currentTimeMillis();
+        time = System.nanoTime() / 1000000;
         updateColPos();
         boolean dropped = doDrop();
         lastUpdateTime = time;
@@ -161,13 +167,20 @@ public class Piece extends JComponent {
 
 
     public void setPixelCoords(double x, double y) {
+        if (pixelX == x && pixelY == y) return;
+
+        boolean skipBounds = (int)pixelX == x && (int)pixelY == y;
         this.pixelX = x;
         this.pixelY = y;
+
+        if (skipBounds) return;
         setBounds(
                 (int) x,
                 (int) y,
                 Constants.PIECE_SIZE * 5,
                 Constants.PIECE_SIZE * 5);
+
+
     }
     
     public void setBoardCoords(int x, int y) {
@@ -225,6 +238,14 @@ public class Piece extends JComponent {
                 isRed ? 1 : -1,
                 ghost,
                 g2d);
+
+        g.setColor(Constants.PRIMARY_COLOR);
+        g2d.setStroke(new BasicStroke(2));
+        g2d.drawRect(
+                Constants.PIECE_SIZE / 4,
+                Constants.PIECE_SIZE / 4,
+                Constants.PIECE_SIZE / 2,
+                Constants.PIECE_SIZE / 2);
 
     }
 

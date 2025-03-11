@@ -10,7 +10,7 @@ public class GameOverDialog extends JDialog{
         this.setSize(Constants.GAMEOVER_WIDTH, Constants.GAMEOVER_HEIGHT);
         this.setLocationRelativeTo(frame);
         this.setUndecorated(true);
-        this.setModalityType(ModalityType.APPLICATION_MODAL);
+        //this.setModalityType(ModalityType.APPLICATION_MODAL);
         this.setBackground(Constants.BACKGROUND_COLOR);
 
         JPanel dialogPanel = new JPanel();

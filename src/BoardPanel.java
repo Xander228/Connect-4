@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.util.ArrayList;
 
 public class BoardPanel extends JPanel {
     //Game board array formatted in cols x rows (x,y)
@@ -42,8 +43,11 @@ public class BoardPanel extends JPanel {
                         remove(ghost);
                         boolean winner = isWinner();
                         boolean tie = isTie();
-                        if (winner || tie)
+                        if (winner || tie) {
                             new GameOverDialog((MainFrame) this.getTopLevelAncestor(), tie, ghost.isRed());
+                            dropBoardPieces();
+                            return;
+                        }
                         setGhost(new Piece(
                                 !ghost.isRed(),
                                 lastMouseX - Constants.PIECE_SIZE / 2,
@@ -134,7 +138,12 @@ public class BoardPanel extends JPanel {
         for(int i = 0; i < Constants.WINNING_LENGTH; i++) {
             total += board[col][row + i];
         }
-        if (total == -Constants.WINNING_LENGTH || total == Constants.WINNING_LENGTH) return true;
+        if (total == -Constants.WINNING_LENGTH || total == Constants.WINNING_LENGTH) {
+            for(int i = 0; i < Constants.WINNING_LENGTH; i++) {
+                board[col][row + i] = 2 * board[col][row + i];
+            }
+            return true;
+        }
         return false;
     }
 
@@ -144,7 +153,12 @@ public class BoardPanel extends JPanel {
         for(int i = 0; i < Constants.WINNING_LENGTH; i++) {
             total += board[col + i][row];
         }
-        if (total == -Constants.WINNING_LENGTH || total == Constants.WINNING_LENGTH) return true;
+        if (total == -Constants.WINNING_LENGTH || total == Constants.WINNING_LENGTH) {
+            for(int i = 0; i < Constants.WINNING_LENGTH; i++) {
+                board[col + i][row] = 2 * board[col + i][row];
+            }
+            return true;
+        }
         return false;
     }
 
@@ -155,7 +169,12 @@ public class BoardPanel extends JPanel {
         for(int i = 0; i < Constants.WINNING_LENGTH; i++) {
             total += board[col + i][row + i];
         }
-        if (total == -Constants.WINNING_LENGTH || total == Constants.WINNING_LENGTH) return true;
+        if (total == -Constants.WINNING_LENGTH || total == Constants.WINNING_LENGTH) {
+            for(int i = 0; i < Constants.WINNING_LENGTH; i++) {
+                board[col + i][row + i] = 2 * board[col + i][row + i];
+            }
+            return true;
+        }
         return false;
     }
 
@@ -166,8 +185,40 @@ public class BoardPanel extends JPanel {
         for(int i = 0; i < Constants.WINNING_LENGTH; i++) {
             total += board[col + i][row + ((Constants.WINNING_LENGTH - 1) - i)];
         }
-        if (total == -Constants.WINNING_LENGTH || total == Constants.WINNING_LENGTH) return true;
+        if (total == -Constants.WINNING_LENGTH || total == Constants.WINNING_LENGTH) {
+            for(int i = 0; i < Constants.WINNING_LENGTH; i++) {
+                board[col + i][row + ((Constants.WINNING_LENGTH - 1) - i)] = 2 * board[col + i][row + ((Constants.WINNING_LENGTH - 1) - i)];
+            }
+            return true;
+        }
         return false;
+    }
+
+    private void dropBoardPieces(){
+        ArrayList<Piece> pieces = new ArrayList<>();
+        for(int indexX = 0; indexX < Constants.BOARD_COLS; indexX++) {
+            for(int indexY = 0; indexY < Constants.BOARD_ROWS; indexY++) {
+                if(Math.abs(board[indexX][indexY]) != 1) continue;
+
+                Piece piece = new Piece(
+                        board[indexX][indexY] == 1,
+                        indexX * Constants.PIECE_SIZE + Constants.BOARD_EDGE_WIDTH,
+                        indexY * Constants.PIECE_SIZE + Constants.DROP_ZONE_HEIGHT,
+                        false);
+                pieces.add(piece);
+                add(piece);
+                piece.resetClock();
+                piece.dropOut();
+                board[indexX][indexY] = 0;
+            }
+        }
+        while (true) {
+            boolean done = true;
+            for (Piece piece : pieces) {
+                piece.updatePosition();
+            }
+            repaint();
+        }
     }
 
     private void paintBoard(Graphics2D g2d) {
