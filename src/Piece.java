@@ -6,7 +6,7 @@ public class Piece extends JComponent {
 
     private boolean isRed;
     
-    private boolean ghost;
+    private boolean isGhost;
     private Piece ghostPiece;
     private int boardX, boardY;
     private double pixelX, pixelY;
@@ -18,10 +18,10 @@ public class Piece extends JComponent {
 
 
     //type is a number 0 - 6 that refers to the type of tetromino
-    public Piece(boolean isRed, int x, int y, boolean ghost) {
+    public Piece(boolean isRed, int x, int y, boolean isGhost) {
         this.isRed = isRed;
 
-        this.ghost = ghost;
+        this.isGhost = isGhost;
 
         setPixelCoords(x, y);
         setVisible(true);
@@ -66,7 +66,7 @@ public class Piece extends JComponent {
 
     public void dropOut() {
         desiredY = Constants.BOARD_HEIGHT + 2 * Constants.PIECE_SIZE;
-        System.out.println("Dropping out");
+        droppingInBoard = true;
     }
 
     public void startDrop(int cellsFilled) {
@@ -77,10 +77,10 @@ public class Piece extends JComponent {
     }
 
     public boolean doDrop(){
-        if(droppingInBoard && (ghost || Math.abs(pixelX - desiredX) > Constants.PIECE_SIZE / 8.0)) return false;
+        if(droppingInBoard && (isGhost || Math.abs(pixelX - desiredX) > Constants.PIECE_SIZE / 8.0)) return false;
         if (pixelY == desiredY && velocityY == 0) return droppingInBoard;
 
-        System.out.println("Dropping into board:" + droppingInBoard);
+        System.out.println("Dropping " + pixelY + " " + desiredY + " " + velocityY);
         double dt = (time - lastUpdateTime) / 1000.0;
         double newY = pixelY + (velocityY * dt) + (0.5 * Constants.GRAVITY * dt * dt);
 
@@ -103,7 +103,7 @@ public class Piece extends JComponent {
             setPixelCoords(pixelX, newY);
         }
 
-        if(Math.abs(pixelY - desiredY) < .5 && Math.abs(velocityY) < 10) {
+        if(Math.abs(pixelY - desiredY) < .5 && Math.abs(velocityY) < 20) {
             velocityY = 0;
             setPixelCoords(pixelX, desiredY);
             if(!droppingInBoard) return false;
@@ -116,7 +116,7 @@ public class Piece extends JComponent {
     }
 
     public boolean moveToCol(double x) {
-        if(!ghost) return false;
+        if(!isGhost) return false;
         desiredX = x;
         return true;
     }
@@ -144,27 +144,13 @@ public class Piece extends JComponent {
         return dropped;
     }
 
-    public double getPixelX() {
-        return pixelX;
-    }
-
-    public double getPixelY() {
-        return pixelY;
-    }
-
-    public int getBoardX() {
-        return boardX;
-    }
-
-    public int getBoardY() {
-        return boardY;
-    }
-
     public boolean isRed() {
         return isRed;
     }
 
-
+    public boolean isBelowBoard() {
+        return pixelY > Constants.BOARD_HEIGHT + Constants.PIECE_SIZE;
+    }
 
     public void setPixelCoords(double x, double y) {
         if (pixelX == x && pixelY == y) return;
@@ -199,19 +185,6 @@ public class Piece extends JComponent {
 
     }
 
-    public boolean isValidPosition(int x, int y, int[][]board){
-        return !(x < 0 || y < 0 ||
-                x > Constants.BOARD_COLS - 1 ||
-                y > Constants.BOARD_ROWS - 1) && board[x][y] == 0;
-    }
-
-    public boolean isValidPosition(int[][] board) {
-        return !(boardX < 0 || boardY < 0 ||
-                boardX > Constants.BOARD_COLS - 1 ||
-                boardY > Constants.BOARD_ROWS - 1) && board[boardX][boardY] == 0;
-    }
-
-
 
     @Override
     public void paintComponent(Graphics g) {
@@ -236,21 +209,12 @@ public class Piece extends JComponent {
                 0,
                 0,
                 isRed ? 1 : -1,
-                ghost,
+                isGhost,
                 g2d);
-
-        g.setColor(Constants.PRIMARY_COLOR);
-        g2d.setStroke(new BasicStroke(2));
-        g2d.drawRect(
-                Constants.PIECE_SIZE / 4,
-                Constants.PIECE_SIZE / 4,
-                Constants.PIECE_SIZE / 2,
-                Constants.PIECE_SIZE / 2);
-
     }
 
     public void setGhost(boolean ghost) {
-        this.ghost = ghost;
+        this.isGhost = ghost;
     }
 
     public boolean isDropping() {

@@ -6,10 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="710cc9a2-8638-4518-ad48-bd379ca353b9" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BoardCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/BoardCalculator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BoardCover.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/BoardCover.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/BoardPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/BoardPanel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Draw.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Draw.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Constants.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Constants.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/GameOverDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GameOverDialog.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Piece.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Piece.java" afterDir="false" />
     </list>

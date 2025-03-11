@@ -25,7 +25,7 @@ public class Constants
     public static final int GAMEOVER_HEIGHT = 100;
     public static final int GAMEOVER_WIDTH = 300;
 
-    public static final double GRAVITY = 10000;
+    public static final double GRAVITY = 12500;
     public static final double BOUNCE_MULTIPLIER = .5;
     public static final int X_VEL_GAIN = 3;
     public static double MAX_X_VELOCITY = 10000;
