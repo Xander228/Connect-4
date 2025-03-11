@@ -3,12 +3,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BoardCalculator {
-    private static ArrayList<Integer> pathCounts = new ArrayList<>();
-    private static ArrayList<ArrayList<Integer>> goodPaths = new ArrayList<>();//Container of lists of columns to play
-    private static ArrayList<ArrayList<Integer>> neutralPaths = new ArrayList<>();//Container of lists of columns to play
-    private static ArrayList<Integer> path = new ArrayList<>();
+    private ArrayList<Integer> pathCounts = new ArrayList<>();
+    private ArrayList<ArrayList<Integer>> goodPaths = new ArrayList<>();//Container of lists of columns to play
+    private ArrayList<ArrayList<Integer>> neutralPaths = new ArrayList<>();//Container of lists of columns to play
+    private ArrayList<Integer> path = new ArrayList<>();
 
-    public static void main(String[] args) {
+
+    public BoardCalculator(int[][] board, int lastIteration) {
+        new Thread(() -> findPossibleMoves(board, 0, lastIteration, true)).start();
+    }
+
+
+
+
+    public void main(String[] args) {
         int[][] board = new int[Constants.BOARD_COLS][Constants.BOARD_ROWS];
 
         findPossibleMoves(board, 0, true);
@@ -17,7 +25,7 @@ public class BoardCalculator {
         System.out.println("Neutral Paths: " + neutralPaths.size());
     }
 
-    public static int findPossibleMoves(int[][] board, int iteration, boolean isMyTurn) {
+    public int findPossibleMoves(int[][] board, int iteration, int lastIteration, boolean isMyTurn) {
         if (pathCounts.size() == iteration) {
             pathCounts.add(0);
             path.add(-1);
@@ -30,7 +38,7 @@ public class BoardCalculator {
         }
         else if(isWinner(board) && !isMyTurn){
             return -(Constants.BOARD_COLS * Constants.BOARD_ROWS - iteration);
-        } else if (iteration > 8){
+        } else if (iteration >= lastIteration) {
             ArrayList<Integer> neutralPath = new ArrayList<>(path);
             neutralPaths.add(neutralPath);
             return 0;
@@ -45,7 +53,7 @@ public class BoardCalculator {
                 int[][] newBoard = copyBoard(board);
                 newBoard[i][getCellsFilled(board, i)] = isMyTurn ? 1 : -1;
 
-                int score = findPossibleMoves(newBoard, iteration + 1, !isMyTurn);
+                int score = findPossibleMoves(newBoard, iteration + 1, lastIteration ,!isMyTurn);
                 distanceToWin = Math.max(distanceToWin, score);
                 if(iteration <= 0 && score != 0) System.out.println("Column: " + i + " Score: " + score);
             }
@@ -55,21 +63,12 @@ public class BoardCalculator {
 
     }
 
-    public static void printPathCounts() {
+    public void printPathCounts() {
         StringBuilder pathCount = new StringBuilder();
         for (Integer count : pathCounts) {
             pathCount.append(count).append(" ");
         }
         System.out.println(pathCount);
-    }
-    public static void printBoard(int[][] board) {
-        for (int i = 0; i < Constants.BOARD_ROWS; i++) {
-            StringBuilder row = new StringBuilder();
-            for (int j = 0; j < Constants.BOARD_COLS; j++) {
-                row.append(board[j][i]).append(" ");
-            }
-            System.out.println(row);
-        }
     }
 
     public static int getCellsFilled(int[][] board, int col) {

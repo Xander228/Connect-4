@@ -6,10 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="710cc9a2-8638-4518-ad48-bd379ca353b9" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BoardPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/BoardPanel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Constants.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Constants.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GameOverDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GameOverDialog.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Piece.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Piece.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BoardCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/BoardCalculator.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -128,7 +125,7 @@
       <workItem from="1741196916603" duration="30460000" />
       <workItem from="1741370165206" duration="11842000" />
       <workItem from="1741413908826" duration="4558000" />
-      <workItem from="1741714479496" duration="1330000" />
+      <workItem from="1741714479496" duration="5292000" />
     </task>
     <servers />
   </component>
