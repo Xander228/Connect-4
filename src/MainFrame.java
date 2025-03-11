@@ -28,8 +28,8 @@ public class MainFrame extends JFrame {
         backgroundPanel = new JPanel(); //Create the BackgroundPanel object
         backgroundPanel.setBackground(Constants.BACKGROUND_COLOR); //Set the background color of the panel
         gamePanel = new GamePanel(); //Create new gamePanel object
-        backgroundPanel.add(gamePanel); //Add the gamePanel object to the backgroundPanel
         add(backgroundPanel); //Add the backgroundPanel to the frame
+        backgroundPanel.add(gamePanel); //Add the gamePanel object to the backgroundPanel
         pack(); //Resizes the frame to fit the gamePanel
     }
 
@@ -38,7 +38,7 @@ public class MainFrame extends JFrame {
     }
 
     //Main method
-    public static void main(String[] args) {
+      {
         new MainFrame(); //Create new TetrisFrame object
     }
 }

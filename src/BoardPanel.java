@@ -3,7 +3,6 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
-import java.awt.image.BufferedImage;
 
 public class BoardPanel extends JPanel {
     //Game board array formatted in cols x rows (x,y)
@@ -14,8 +13,6 @@ public class BoardPanel extends JPanel {
     int lastMouseX = 0;
 
     //Create a counter to count the number of gameLoops elapsed since the last drop
-
-
 
     public BoardPanel(){
         // Initialize components, set layout
@@ -31,12 +28,13 @@ public class BoardPanel extends JPanel {
         ghost.dropIn();
         ghost.moveToCol(Math.clamp(Math.round((double) lastMouseX / Constants.PIECE_SIZE), 1, Constants.BOARD_COLS) * Constants.PIECE_SIZE - Constants.PIECE_SIZE / 2.0);
 
-
         BoardCover boardCover = new BoardCover(Constants.BOARD_EDGE_WIDTH, Constants.DROP_ZONE_HEIGHT);
         add(boardCover, 0);
 
         addListeners();
-        EventQueue.invokeLater(() -> new Thread(() -> {
+        EventQueue.invokeLater(() -> {
+            new GameModeDialog((Frame) this.getTopLevelAncestor());
+            new Thread(() -> {
                 ghost.resetClock();
                 while (true) {
                     if (ghost.updatePosition()) {
@@ -44,8 +42,8 @@ public class BoardPanel extends JPanel {
                         remove(ghost);
                         boolean winner = isWinner();
                         boolean tie = isTie();
-                        if(winner || tie)
-                            new GameOver((MainFrame) this.getTopLevelAncestor(), tie, ghost.isRed());
+                        if (winner || tie)
+                            new GameOverDialog((MainFrame) this.getTopLevelAncestor(), tie, ghost.isRed());
                         setGhost(new Piece(
                                 !ghost.isRed(),
                                 lastMouseX - Constants.PIECE_SIZE / 2,
@@ -57,7 +55,8 @@ public class BoardPanel extends JPanel {
                     }
                     repaint();
                 }
-            }).start());
+            }).start();
+        });
     }
 
     public void addListeners() {

@@ -43,26 +43,33 @@ public class GamePanel extends JLayeredPane {
     //GamePanel constructor
     public GamePanel() {
 
-        boardPanel = new BoardPanel(); //Create the MatrixPanel object
-        topPanel = new TopPanel();
+
 
         //Set up the panel properties
 
         setLayout(new OverlayLayout(this));
 
         JPanel innerPanel = new JPanel();
+        add(innerPanel, 0); //Adds the piecePanel object to the bottom of the parent panel
+
         innerPanel.setLayout(new BorderLayout(10, 10));
         innerPanel.setBackground(Constants.BACKGROUND_COLOR);
         innerPanel.setBorder(BorderFactory.createMatteBorder(5, 10, 10, 10, Constants.BACKGROUND_COLOR));
-        // Add the matrixPanel and piecePanel to the panel
+
         JPanel outerBoardPanel = new JPanel();
+        innerPanel.add(outerBoardPanel); //Adds the matrixPanel object to the center of the parent panel
+
+        topPanel = new TopPanel();
+        innerPanel.add(topPanel, BorderLayout.NORTH);
+
         outerBoardPanel.setBorder(
                 new RoundedBorder(Constants.ACCENT_COLOR, Constants.ACCENT_COLOR_2));
         outerBoardPanel.setBackground(Constants.BACKGROUND_COLOR);
+
+        boardPanel = new BoardPanel(); //Create the MatrixPanel object
         outerBoardPanel.add(boardPanel, BorderLayout.CENTER);
-        innerPanel.add(outerBoardPanel); //Adds the matrixPanel object to the center of the parent panel
-        innerPanel.add(topPanel, BorderLayout.NORTH);
-        add(innerPanel, 0); //Adds the piecePanel object to the bottom of the parent panel
+
+
 
     }
 

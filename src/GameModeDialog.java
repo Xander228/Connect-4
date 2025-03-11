@@ -4,9 +4,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 
-public class GameOver extends JDialog{
-    GameOver(MainFrame frame, boolean tie, boolean redWin){
-        super(frame,"GameOver");
+public class GameModeDialog extends JDialog{
+    GameModeDialog(Frame frame){
+        super(frame,"Game Mode");
         this.setSize(Constants.GAMEOVER_WIDTH, Constants.GAMEOVER_HEIGHT);
         this.setLocationRelativeTo(frame);
         this.setUndecorated(true);
@@ -20,7 +20,7 @@ public class GameOver extends JDialog{
 
         JPanel textPanel = new JPanel();
         textPanel.setBackground(Constants.BACKGROUND_COLOR);
-        String textString = tie ? "TIE GAME" : (redWin ? "RED WINS" : "YELLOW WINS");
+        String textString = "choose game mode";
         JLabel text = new JLabel(textString, JLabel.CENTER);
         text.setFont(new Font("Arial", Font.BOLD, 26));
         text.setForeground(Constants.PRIMARY_COLOR);
@@ -47,8 +47,7 @@ public class GameOver extends JDialog{
 
         restart.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
-                GameOver.super.dispose();
-                frame.startNewGame();
+                GameModeDialog.super.dispose();
             }
         });
 
