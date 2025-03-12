@@ -196,34 +196,49 @@ public class BoardPanel extends JPanel {
 
     private void dropBoardPieces(){
         ArrayList<Piece> pieces = new ArrayList<>();
-        for(int indexX = 0; indexX < Constants.BOARD_COLS; indexX++) {
-            for(int indexY = 0; indexY < Constants.BOARD_ROWS; indexY++) {
-                if(board[indexX][indexY] == 0) continue;
+
+
+        for (int indexX = 0; indexX < Constants.BOARD_COLS; indexX++) {
+            for (int indexY = 0; indexY < Constants.BOARD_ROWS; indexY++) {
+                if (board[indexX][indexY] == 0) continue;
                 Piece piece = new Piece(
                         board[indexX][indexY] > 0,
                         indexX * Constants.PIECE_SIZE + Constants.BOARD_EDGE_WIDTH,
                         indexY * Constants.PIECE_SIZE + Constants.DROP_ZONE_HEIGHT,
                         false);
-                if(Math.abs(board[indexX][indexY]) == 1) {
+                if (Math.abs(board[indexX][indexY]) == 1) {
                     add(piece, -1);
-                    pieces.add(piece);
                     piece.resetClock();
                     piece.dropOut();
+                    pieces.add(piece);
                 } else {
                     add(piece, 0);
+                    continue;
                 }
                 board[indexX][indexY] = 0;
+                repaint();
+                try {
+                    Thread.sleep(20);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                for (Piece piece1 : pieces) {
+                    piece1.updatePosition();
+                }
             }
         }
+
         while (true) {
             boolean done = true;
+            if(pieces.isEmpty()) continue;
             for (Piece piece : pieces) {
                 piece.updatePosition();
-                if(!piece.isBelowBoard()) done = false;
+                if (!piece.isBelowBoard()) done = false;
             }
             repaint();
-            if(done) break;
+            if (done) break;
         }
+
     }
 
     private void paintBoard(Graphics2D g2d) {

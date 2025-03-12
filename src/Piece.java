@@ -80,15 +80,22 @@ public class Piece extends JComponent {
         if(droppingInBoard && (isGhost || Math.abs(pixelX - desiredX) > Constants.PIECE_SIZE / 8.0)) return false;
         if (pixelY == desiredY && velocityY == 0) return droppingInBoard;
 
-        System.out.println("Dropping " + pixelY + " " + desiredY + " " + velocityY);
         double dt = (time - lastUpdateTime) / 1000.0;
         double newY = pixelY + (velocityY * dt) + (0.5 * Constants.GRAVITY * dt * dt);
+
+        Car car = new Car("Toyota", "Camry", 2020);
+        Car car2 = new Car("Toyota", "Tacoma", 2022);
+
+
+
+
+        double newVelocityY = velocityY + Constants.GRAVITY * dt;
 
         if (newY > desiredY) {
             double overshoot = newY - desiredY;
             double initialVelocity = Math.sqrt(velocityY * velocityY + 2 * Constants.GRAVITY * overshoot);
-            velocityY += Constants.GRAVITY * dt;
-            double overshootTime = (velocityY - initialVelocity) / Constants.GRAVITY;
+
+            double overshootTime = (newVelocityY - initialVelocity) / Constants.GRAVITY;
 
             velocityY = -(Constants.BOUNCE_MULTIPLIER * initialVelocity);
             double correctedY =
@@ -99,7 +106,7 @@ public class Piece extends JComponent {
             setPixelCoords(pixelX, correctedY);
         }
         else {
-            velocityY += Constants.GRAVITY * dt;
+            velocityY = newVelocityY;
             setPixelCoords(pixelX, newY);
         }
 
@@ -182,7 +189,9 @@ public class Piece extends JComponent {
 
     public void lock(int[][] board) {
         board[boardX][boardY] = isRed? 1 : -1;
-
+        new Thread(() -> {
+            System.out.println(new BoardCalculator(board, 4, isRed).calculateBestMove());
+        }).start();
     }
 
 

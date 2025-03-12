@@ -3,73 +3,78 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BoardCalculator {
-    private ArrayList<Integer> pathCounts = new ArrayList<>();
-    private ArrayList<ArrayList<Integer>> goodPaths = new ArrayList<>();//Container of lists of columns to play
-    private ArrayList<ArrayList<Integer>> neutralPaths = new ArrayList<>();//Container of lists of columns to play
-    private ArrayList<Integer> path = new ArrayList<>();
 
+    private int[][] board;
+    private int searchDepth;
+    private boolean isRed;
 
-    public BoardCalculator(int[][] board, int lastIteration) {
-        new Thread(() -> findPossibleMoves(board, 0, lastIteration, true)).start();
+    public BoardCalculator(int[][] board, int searchDepth, boolean isRed) {
+        this.board = board;
+        this.searchDepth = searchDepth;
+        this.isRed = isRed;
+
     }
 
+    public int calculateBestMove() {
+        int bestMove = 0;
+        int bestScore = Integer.MIN_VALUE;
 
+        for(int i = 0; i < Constants.BOARD_COLS; i++) {
+            int[][] newBoard = copyBoard(board);
+            int row = getCellsFilled(board, i);
+            if(row == -1) continue;
+            newBoard[i][row] = isRed ? 1 : -1;
+            int score = findPossibleMoves(newBoard, 1, searchDepth, false);
+            if(score > bestScore) {
+                bestScore = score;
+                bestMove = i;
+            }
+            System.out.println("Column: " + i + " Score: " + score);
+        }
 
+        return bestMove;
+    }
 
-    public void main(String[] args) {
-        int[][] board = new int[Constants.BOARD_COLS][Constants.BOARD_ROWS];
-
-        findPossibleMoves(board, 0, true);
-
-        System.out.println("Good Paths: " + goodPaths.size());
-        System.out.println("Neutral Paths: " + neutralPaths.size());
+    public void printBoard(int[][] board){
+        System.out.println();
+        for(int i = 0; i < Constants.BOARD_ROWS; i++){
+            for(int j = 0; j < Constants.BOARD_COLS; j++){
+                System.out.print((board[j][i] != -1 ? " " : "") + board[j][i] + " ");
+            }
+            System.out.println();
+        }
     }
 
     public int findPossibleMoves(int[][] board, int iteration, int lastIteration, boolean isMyTurn) {
-        if (pathCounts.size() == iteration) {
-            pathCounts.add(0);
-            path.add(-1);
-        }
-
         if (isWinner(board) && isMyTurn) {
-            ArrayList<Integer> goodPath = new ArrayList<>(path);
-            goodPaths.add(goodPath);
+            printBoard(board);
             return Constants.BOARD_COLS * Constants.BOARD_ROWS - iteration;
         }
-        else if(isWinner(board) && !isMyTurn){
+        else if(isWinner(board) && !isMyTurn) {
             return -(Constants.BOARD_COLS * Constants.BOARD_ROWS - iteration);
         } else if (iteration >= lastIteration) {
-            ArrayList<Integer> neutralPath = new ArrayList<>(path);
-            neutralPaths.add(neutralPath);
             return 0;
         }
 
 
-        int distanceToWin = 0;
+        int distanceToWin = isMyTurn ? Integer.MIN_VALUE : Integer.MAX_VALUE;
         for (int i = 0; i < Constants.BOARD_COLS; i++) {
             if (board[i][0] == 0) {
-                pathCounts.set(iteration, pathCounts.get(iteration) + 1);
-                path.set(iteration, i);
                 int[][] newBoard = copyBoard(board);
-                newBoard[i][getCellsFilled(board, i)] = isMyTurn ? 1 : -1;
+                newBoard[i][getCellsFilled(board, i)] = (!isRed ^ isMyTurn) ? 1 : -1;
 
                 int score = findPossibleMoves(newBoard, iteration + 1, lastIteration ,!isMyTurn);
-                distanceToWin = Math.max(distanceToWin, score);
-                if(iteration <= 0 && score != 0) System.out.println("Column: " + i + " Score: " + score);
+
+                if(isMyTurn) distanceToWin = Math.max(distanceToWin, score);
+                else distanceToWin = Math.min(distanceToWin, score);
+                //if(iteration <= 0 && score != 0) System.out.println("Column: " + i + " Score: " + score);
             }
         }
-        if(iteration == 0) printPathCounts();
         return distanceToWin;
 
     }
 
-    public void printPathCounts() {
-        StringBuilder pathCount = new StringBuilder();
-        for (Integer count : pathCounts) {
-            pathCount.append(count).append(" ");
-        }
-        System.out.println(pathCount);
-    }
+
 
     public static int getCellsFilled(int[][] board, int col) {
         for(int indexY = 0; indexY < Constants.BOARD_ROWS; indexY++) {
